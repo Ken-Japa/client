@@ -4,7 +4,7 @@ import {Opt, Opt2, Opt3, Opt5} from '../components'
 function Opcoes() {
 
   return (
-    <div><Opt2 /></div>
+    <div><Opt3 /></div>
   )
 }
 
