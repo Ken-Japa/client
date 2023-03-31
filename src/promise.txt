@@ -1,0 +1,14 @@
+['1', 'EMPRESA', '3', 'CALLouPUT', '5', '6', 'CODEMPRESA', 'ONouPN', '9','10','11','12','13','CODOPCAO','15', 'TIPO', 'STRIKE', 'DATA','19']
+
+.my-button {
+  margin-left: 1rem;
+}
+.btn-primary {
+    background-color: gainsboro;
+    color: red;
+  }
+
+  .btn-outline-primary {
+    background-color: gainsboro;
+    color: darkgreen;
+  }
