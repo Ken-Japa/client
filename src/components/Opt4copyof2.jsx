@@ -1,6 +1,9 @@
+// Copia final de OPT5
 import React, { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css'
+import {close} from '../assets'
 
 function Opt4() {
 
@@ -8,6 +11,8 @@ function Opt4() {
     const [EmpresaSelecionada, setEmpresaSelecionada] = useState('');
     const [selectedButtons, setSelectedButtons] = useState([]);
     const [slctButtonsONPN, setSlctButtonsONPN] = useState([]);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [showTab, setShowTab] = useState(false);
 
      //Consumindo dados para DB
     useEffect(() => {
@@ -87,14 +92,33 @@ function Opt4() {
       return filtere;
     };
 
-    ///// RETURN
+    //Row Select
+    const handleRowClick = (id) => {
+      if (selectedRow !== null) {
+        setSelectedRow(null);
+        setShowTab(false);
+        document.querySelector('.tables').classList.remove('blurry');
+      } else {
+        setSelectedRow(id);
+        setShowTab(true);
+        document.querySelector('.tables').classList.add('blurry');
+      }
+    };
     
+    let selectedRowDetails = null;
+    if (selectedRow) {
+    const selectedItem = filterDataVOP().find((item) => item.id === selectedRow)
+    selectedRowDetails = selectedItem}
+    
+    ///// RETURN
   return (<div>
 
     {/* Header com Selecionador de Empresa */}
     <header className="flex justify-center">
       <select className="border rounded-md shadow-sm" value={EmpresaSelecionada} 
-        onChange={(e)=>{setEmpresaSelecionada(e.target.value)}}>
+        onChange={(e)=>{setEmpresaSelecionada(e.target.value)
+                        setSelectedButtons([])
+                        setSlctButtonsONPN([])}}>
           <option value=""> -- Selecione a empresa -- </option>                       
               {Empresas.map(displaydata => (
               <option key={displaydata} value={displaydata}>
@@ -127,7 +151,7 @@ function Opt4() {
             .map((data) => (<button
             key={uuidv4()}
             type="button"
-            className={`ml-4 w-40 border   font-inter rounded-md font-medium hover:bg-[#16b0a1] hover:text-white
+            className={`ml-4 w-40 border bg-blue-300 font-inter rounded-md font-medium hover:bg-[#16b0a1] hover:text-white
               ${slctButtonsONPN.includes(data) ? "bg-black text-red-600 font-bold" : "btn-outline-primary"}`}
             onClick={() => handleButtonClick2(data)}>
             {data}
@@ -135,76 +159,98 @@ function Opt4() {
       )}
     </div>)}
     {/* Tabelas */} 
-    <div>
-    <br /><strong className="mt-3 flex justify-center font-inter text-[37px] text-blue-600 rounded-md ">
-    Tabela Call
-    </strong><br />
-    {/* Tabela Call */}
-      <table className="table table-striped table-info table-hover border shadow-2xl table-auto flex ">
-      <thead className="thead-dark text-center">
-        <tr>
-          <th>Empresa</th>
-          <th>Codigo da Empresa</th>
-          <th>Tipo Opcao</th>
-          <th>ON ou PN</th>
-          <th>Codigo da Opcao</th>
-          <th>Strike</th>
-          <th>Vencimento</th>
-        </tr>
-      </thead>
-      <tbody className="text-center">
-        {filterDataVOP()
-        .filter((i) => {return EmpresaSelecionada ? i.CALLouPUT === 'OPCOES COMPRA' : true; })
-        .map((item) => (
-          <tr key={item.id}>
-            <td>{item.EMPRESA}</td>
-            <td>{item.CODEMPRESA}</td>
-            <td>{item.TIPO}</td>
-            <td>{item.ONouPN}</td>
-            <td>  <span>{item.CODOPCAO.slice(0, 4)}</span>
+      <div className='tables'>
+        <br /><strong className="mt-3 flex justify-center font-inter text-[37px] text-blue-600 rounded-md ">
+        Tabela Call
+        </strong><br />
+        {/* Tabela Call */}
+          <table className="table table-striped table-info table-hover border shadow-2xl table-auto flex ">
+          <thead className="thead-dark text-center">
+            <tr>
+              <th>Empresa</th>
+              <th>Codigo da Empresa</th>
+              <th>Tipo Opcao</th>
+              <th>ON ou PN</th>
+              <th>Codigo da Opcao</th>
+              <th>Strike</th>
+              <th>Vencimento</th>
+            </tr>
+          </thead>
+          <tbody className="text-center">
+            {filterDataVOP()
+            .filter((i) => {return EmpresaSelecionada ? i.CALLouPUT === 'OPCOES COMPRA' : true; })
+            .map((item) => (
+              <tr key={item.id} onClick={() => handleRowClick(item.id)} className={selectedRow === item.id ? 'selected-row' : ''}>
+                <td>{item.EMPRESA}</td>
+                <td>{item.CODEMPRESA}</td>
+                <td>{item.TIPO}</td>
+                <td>{item.ONouPN}</td>
+                <td>  <span>{item.CODOPCAO.slice(0, 4)}</span>
+                      <span style={{color: 'red', fontWeight: 'bold'}}>{item.CODOPCAO.charAt(4)}</span>
+                      <span style={{color: 'red',fontWeight: 'bold'}}>{item.CODOPCAO.slice(5)}</span></td>
+                <td>{item.STRIKE}</td>
+                <td>{item.DATA}</td>
+              </tr>))}
+          </tbody>
+          </table>
+
+
+        <br /><br /><strong className="flex justify-center font-inter text-[37px] text-yellow-500 rounded-md  ">
+        Tabela Put
+        </strong><br />
+        {/* Tabela Put */}
+        <table className="table table-striped table-warning table-hover border shadow-2xl">
+          <thead className="thead-dark text-center">
+            <tr>
+              <th>Empresa</th>
+              <th>Codigo da Empresa</th>
+              <th>Tipo Opcao</th>
+              <th>ON ou PN</th>
+              <th>Codigo da Opcao</th>
+              <th>Strike</th>
+              <th>Vencimento</th>
+            </tr>
+          </thead>
+          <tbody className="text-center" >
+          {filterDataVOP()
+          .filter((i) => {return EmpresaSelecionada ? i.CALLouPUT === 'OPCOES VENDA' : true; })
+          .map((item) => (
+            <tr key={item.id} onClick={() => handleRowClick(item.id)} className={selectedRow === item.id ? 'selected-row' : ''}>
+              <td>{item.EMPRESA}</td>
+              <td>{item.CODEMPRESA}</td>
+              <td>{item.TIPO}</td>
+              <td>{item.ONouPN}</td>
+              <td> <span>{item.CODOPCAO.slice(0, 4)}</span>
                   <span style={{color: 'red', fontWeight: 'bold'}}>{item.CODOPCAO.charAt(4)}</span>
                   <span style={{color: 'red',fontWeight: 'bold'}}>{item.CODOPCAO.slice(5)}</span></td>
-            <td>{item.STRIKE}</td>
-            <td>{item.DATA}</td>
-          </tr>))}
-      </tbody>
-      </table>
+              <td>{item.STRIKE}</td>
+              <td>{item.DATA}</td>
+            </tr>))}
+          </tbody>
+        </table>
 
-    <br /><br /><strong className="flex justify-center font-inter text-[37px] text-yellow-500 rounded-md  ">
-    Tabela Put
-    </strong><br />
-    {/* Tabela Put */}
-    <table className="table table-striped table-warning table-hover border shadow-2xl">
-      <thead className="thead-dark text-center">
-        <tr>
-          <th>Empresa</th>
-          <th>Codigo da Empresa</th>
-          <th>Tipo Opcao</th>
-          <th>ON ou PN</th>
-          <th>Codigo da Opcao</th>
-          <th>Strike</th>
-          <th>Vencimento</th>
-        </tr>
-      </thead>
-      <tbody className="text-center" >
-      {filterDataVOP()
-      .filter((i) => {return EmpresaSelecionada ? i.CALLouPUT === 'OPCOES VENDA' : true; })
-      .map((item) => (
-        <tr key={item.id}>
-          <td>{item.EMPRESA}</td>
-          <td>{item.CODEMPRESA}</td>
-          <td>{item.TIPO}</td>
-          <td>{item.ONouPN}</td>
-          <td> <span>{item.CODOPCAO.slice(0, 4)}</span>
-              <span style={{color: 'red', fontWeight: 'bold'}}>{item.CODOPCAO.charAt(4)}</span>
-              <span style={{color: 'red',fontWeight: 'bold'}}>{item.CODOPCAO.slice(5)}</span></td>
-          <td>{item.STRIKE}</td>
-          <td>{item.DATA}</td>
-        </tr>))}
-      </tbody>
-    </table>
+      </div>
 
-    </div>
+      {/*Tab render*/}
+      {showTab && selectedRowDetails && (<div className="tab shadow-2xl">
+          <img src={close} alt="close" className="w-6 absolute top-1 right-1 hover:cursor-pointer" onClick={()=>{setSelectedRow(null);setShowTab(false);document.querySelector('.tables').classList.remove('blurry')}}/>
+        <header className="flex-col text-center font-inter"><br/>
+          <div className="flex-row"><h1 className="font-bold ">{selectedRowDetails.EMPRESA} <span className="font-normal mt-1"> - {selectedRowDetails.CODEMPRESA}</span></h1></div>
+          <h2 className="text-red-500">{selectedRowDetails.ONouPN}</h2>
+        </header> 
+        <div className=" flex-col border border-black text-center font-inter mt-3 bg-[#D8e5f5]">
+          <h1 className="text-blue-700 font-bold"><span>{selectedRowDetails.CODOPCAO.slice(0,4)}</span>
+            <span style={{color:'red'}}>{selectedRowDetails.CODOPCAO.slice(4)}</span>
+          </h1>
+          <h1 className="font-normal mt-1">{selectedRowDetails.CALLouPUT}</h1>
+          <h1 className="text-blue-700 font-normal mt-1">{selectedRowDetails.TIPO}</h1>
+          <h1 className="font-bold mt-1"> Strike : {selectedRowDetails.STRIKE}</h1>
+          <h1 className="text-[#e30d16] font-bold mt-1"> Vencimento : {selectedRowDetails.DATA}</h1>
+
+        </div>
+        <button className="border bg-blue-500 text-white w-40 mt-3 rounded-md float-right">Adicionar</button>
+      </div>)}
+      
   </div>
     
     

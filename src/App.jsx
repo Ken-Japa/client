@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 
-import {back, logo} from './assets'
+import {logo} from './assets'
 import {Home, Opcoes, Opt} from './pages';
 
 const App = () => {
@@ -14,7 +14,7 @@ return(
   <Link to="/opcoes" className="font-inter font-medium bg-blue-500 text-white px-4 py-2 rounded-md ">Opcoes</Link>
   </header>
   
-  <main className="bg:{back} sm:p-8 px-4 py-8 w-full bg-[#f9fafe] min-h-[calc(100vh-73px)]">
+  <main className=" m:p-8 px-4 py-8 w-full bg-[#f9fafe] min-h-[calc(100vh-73px)]">
     <Routes>
       <Route path="/" element={<Home />}/>
       <Route path="/opcoes" element={<Opcoes />}/>

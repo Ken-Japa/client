@@ -1,3 +1,4 @@
+// Antes de renderizar tab
 import React, { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -94,7 +95,9 @@ function Opt2() {
     {/* Header com Selecionador de Empresa */}
     <header className="flex justify-center">
       <select className="border rounded-md shadow-sm" value={EmpresaSelecionada} 
-        onChange={(e)=>{setEmpresaSelecionada(e.target.value)}}>
+        onChange={(e)=>{setEmpresaSelecionada(e.target.value)
+                        setSelectedButtons([])
+                        setSlctButtonsONPN([])}}>
           <option value=""> -- Selecione a empresa -- </option>                       
               {Empresas.map(displaydata => (
               <option key={displaydata} value={displaydata}>
